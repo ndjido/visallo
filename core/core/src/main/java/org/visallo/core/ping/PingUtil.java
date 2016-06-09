@@ -12,7 +12,7 @@ import org.vertexium.query.*;
 import org.visallo.core.exception.VisalloException;
 import org.visallo.core.model.longRunningProcess.LongRunningProcessRepository;
 import org.visallo.core.model.properties.VisalloProperties;
-import org.visallo.core.model.user.AuthorizationRepository;
+import org.visallo.core.model.user.GraphAuthorizationRepository;
 import org.visallo.core.model.user.UserRepository;
 import org.visallo.core.model.workQueue.Priority;
 import org.visallo.core.model.workQueue.WorkQueueRepository;
@@ -31,10 +31,10 @@ public class PingUtil {
 
     @Inject
     public PingUtil(
-            AuthorizationRepository authorizationRepository,
+            GraphAuthorizationRepository graphAuthorizationRepository,
             UserRepository userRepository
     ) {
-        authorizationRepository.addAuthorizationToGraph(VISIBILITY_STRING);
+        graphAuthorizationRepository.addAuthorizationToGraph(VISIBILITY_STRING);
         this.systemUser = userRepository.getSystemUser();
     }
 

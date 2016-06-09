@@ -18,10 +18,7 @@ import org.visallo.core.model.longRunningProcess.LongRunningProcessRepository;
 import org.visallo.core.model.ontology.OntologyRepository;
 import org.visallo.core.model.directory.DirectoryRepository;
 import org.visallo.core.model.search.SearchRepository;
-import org.visallo.core.model.user.AuthorizationMapper;
-import org.visallo.core.model.user.AuthorizationRepository;
-import org.visallo.core.model.user.UserRepository;
-import org.visallo.core.model.user.UserSessionCounterRepository;
+import org.visallo.core.model.user.*;
 import org.visallo.core.model.workQueue.WorkQueueRepository;
 import org.visallo.core.model.workspace.WorkspaceRepository;
 import org.visallo.core.security.ACLProvider;
@@ -118,67 +115,70 @@ public class VisalloBootstrap extends AbstractModule {
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(Traced.class), new TracedMethodInterceptor());
 
         bind(TraceRepository.class)
-                .toProvider(VisalloBootstrap.<TraceRepository>getConfigurableProvider(configuration, Configuration.TRACE_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.TRACE_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(Graph.class)
                 .toProvider(getGraphProvider(configuration, Configuration.GRAPH_PROVIDER))
                 .in(Scopes.SINGLETON);
         bind(LockRepository.class)
-                .toProvider(VisalloBootstrap.<LockRepository>getConfigurableProvider(configuration, Configuration.LOCK_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.LOCK_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(WorkQueueRepository.class)
-                .toProvider(VisalloBootstrap.<WorkQueueRepository>getConfigurableProvider(configuration, Configuration.WORK_QUEUE_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.WORK_QUEUE_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(LongRunningProcessRepository.class)
-                .toProvider(VisalloBootstrap.<LongRunningProcessRepository>getConfigurableProvider(configuration, Configuration.LONG_RUNNING_PROCESS_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.LONG_RUNNING_PROCESS_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(DirectoryRepository.class)
-                .toProvider(VisalloBootstrap.<DirectoryRepository>getConfigurableProvider(configuration, Configuration.DIRECTORY_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.DIRECTORY_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(VisibilityTranslator.class)
-                .toProvider(VisalloBootstrap.<VisibilityTranslator>getConfigurableProvider(configuration, Configuration.VISIBILITY_TRANSLATOR))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.VISIBILITY_TRANSLATOR))
                 .in(Scopes.SINGLETON);
         bind(UserRepository.class)
-                .toProvider(VisalloBootstrap.<UserRepository>getConfigurableProvider(configuration, Configuration.USER_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.USER_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(UserSessionCounterRepository.class)
-                .toProvider(VisalloBootstrap.<UserSessionCounterRepository>getConfigurableProvider(configuration, Configuration.USER_SESSION_COUNTER_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.USER_SESSION_COUNTER_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(SearchRepository.class)
-                .toProvider(VisalloBootstrap.<SearchRepository>getConfigurableProvider(configuration, Configuration.SEARCH_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.SEARCH_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(WorkspaceRepository.class)
-                .toProvider(VisalloBootstrap.<WorkspaceRepository>getConfigurableProvider(configuration, Configuration.WORKSPACE_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.WORKSPACE_REPOSITORY))
                 .in(Scopes.SINGLETON);
-        bind(AuthorizationRepository.class)
-                .toProvider(VisalloBootstrap.<AuthorizationRepository>getConfigurableProvider(configuration, Configuration.AUTHORIZATION_REPOSITORY))
+        bind(GraphAuthorizationRepository.class)
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.GRAPH_AUTHORIZATION_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(OntologyRepository.class)
-                .toProvider(VisalloBootstrap.<OntologyRepository>getConfigurableProvider(configuration, Configuration.ONTOLOGY_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.ONTOLOGY_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(SimpleOrmSession.class)
-                .toProvider(VisalloBootstrap.<SimpleOrmSession>getConfigurableProvider(configuration, Configuration.SIMPLE_ORM_SESSION))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.SIMPLE_ORM_SESSION))
                 .in(Scopes.SINGLETON);
         bind(HttpRepository.class)
-                .toProvider(VisalloBootstrap.<HttpRepository>getConfigurableProvider(configuration, Configuration.HTTP_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.HTTP_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(GeocoderRepository.class)
-                .toProvider(VisalloBootstrap.<GeocoderRepository>getConfigurableProvider(configuration, Configuration.GEOCODER_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.GEOCODER_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(EmailRepository.class)
-                .toProvider(VisalloBootstrap.<EmailRepository>getConfigurableProvider(configuration, Configuration.EMAIL_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.EMAIL_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(StatusRepository.class)
-                .toProvider(VisalloBootstrap.<StatusRepository>getConfigurableProvider(configuration, Configuration.STATUS_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.STATUS_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(ACLProvider.class)
-                .toProvider(VisalloBootstrap.<ACLProvider>getConfigurableProvider(configuration, Configuration.ACL_PROVIDER_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.ACL_PROVIDER_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(FileSystemRepository.class)
-                .toProvider(VisalloBootstrap.<FileSystemRepository>getConfigurableProvider(configuration, Configuration.FILE_SYSTEM_REPOSITORY))
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.FILE_SYSTEM_REPOSITORY))
                 .in(Scopes.SINGLETON);
-        bind(AuthorizationMapper.class)
-                .toProvider(VisalloBootstrap.<AuthorizationMapper>getConfigurableProvider(configuration, Configuration.AUTHORIZATION_MAPPER))
+        bind(AuthorizationRepository.class)
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.AUTHORIZATION_REPOSITORY))
+                .in(Scopes.SINGLETON);
+        bind(PrivilegeRepository.class)
+                .toProvider(VisalloBootstrap.getConfigurableProvider(configuration, Configuration.PRIVILEGE_REPOSITORY))
                 .in(Scopes.SINGLETON);
         bind(TimeRepository.class)
                 .toInstance(new TimeRepository());
@@ -208,21 +208,18 @@ public class VisalloBootstrap extends AbstractModule {
             throw new RuntimeException("Could not find create(Map) method on class: " + graphClass.getName(), e);
         }
 
-        return new Provider<Graph>() {
-            @Override
-            public Graph get() {
-                Graph g;
-                try {
-                    LOGGER.debug("creating graph");
-                    g = (Graph) createMethod.invoke(null, configurationSubset);
-                } catch (Exception e) {
-                    throw new RuntimeException("Could not create graph " + graphClass.getName(), e);
-                }
-
-                checkVisalloGraphVersion(g);
-
-                return g;
+        return (Provider<Graph>) () -> {
+            Graph g;
+            try {
+                LOGGER.debug("creating graph");
+                g = (Graph) createMethod.invoke(null, configurationSubset);
+            } catch (Exception e) {
+                throw new RuntimeException("Could not create graph " + graphClass.getName(), e);
             }
+
+            checkVisalloGraphVersion(g);
+
+            return g;
         };
     }
 
@@ -255,7 +252,7 @@ public class VisalloBootstrap extends AbstractModule {
 
     public static <T> Provider<? extends T> getConfigurableProvider(final Configuration config, final String key) {
         Class<? extends T> configuredClass = config.getClass(key);
-        return configuredClass != null ? new ConfigurableProvider<>(configuredClass, config, key, null) : new NullProvider<T>();
+        return configuredClass != null ? new ConfigurableProvider<>(configuredClass, config, key, null) : new NullProvider<>();
     }
 
     private static class NullProvider<T> implements Provider<T> {

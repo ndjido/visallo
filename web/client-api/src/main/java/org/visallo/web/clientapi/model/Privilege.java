@@ -74,7 +74,7 @@ public final class Privilege {
             if (privilegesStringPart.trim().length() == 0) {
                 continue;
             }
-            privileges.add(privilegesStringPart);
+            privileges.add(privilegesStringPart.trim());
         }
         return privileges;
     }

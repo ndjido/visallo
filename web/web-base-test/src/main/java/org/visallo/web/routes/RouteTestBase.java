@@ -89,10 +89,8 @@ public abstract class RouteTestBase {
 
         graph = InMemoryGraph.create(getGraphConfiguration());
 
-        Set<String> privileges = new HashSet<>();
-        String[] authorizations = new String[0];
         String currentWorkspaceId = null;
-        nonProxiedUser = new InMemoryUser("jdoe", "Jane Doe", "jane.doe@email.com", privileges, authorizations, currentWorkspaceId);
+        nonProxiedUser = new InMemoryUser("jdoe", "Jane Doe", "jane.doe@email.com", currentWorkspaceId);
         when(userRepository.findById(eq(USER_ID))).thenReturn(nonProxiedUser);
 
         sessionUser = new SessionUser(USER_ID);

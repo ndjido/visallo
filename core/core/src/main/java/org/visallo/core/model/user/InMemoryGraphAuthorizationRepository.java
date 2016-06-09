@@ -5,8 +5,8 @@ import org.visallo.core.util.VisalloLoggerFactory;
 
 import java.util.*;
 
-public class InMemoryAuthorizationRepository implements AuthorizationRepository {
-    private static final VisalloLogger LOGGER = VisalloLoggerFactory.getLogger(InMemoryAuthorizationRepository.class);
+public class InMemoryGraphAuthorizationRepository implements GraphAuthorizationRepository {
+    private static final VisalloLogger LOGGER = VisalloLoggerFactory.getLogger(InMemoryGraphAuthorizationRepository.class);
     private List<String> authorizations = new ArrayList<>();
 
     @Override

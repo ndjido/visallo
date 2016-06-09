@@ -40,7 +40,7 @@ public class Configuration {
     public static final String USER_REPOSITORY = "repository.user";
     public static final String SEARCH_REPOSITORY = "repository.search";
     public static final String WORKSPACE_REPOSITORY = "repository.workspace";
-    public static final String AUTHORIZATION_REPOSITORY = "repository.authorization";
+    public static final String GRAPH_AUTHORIZATION_REPOSITORY = "repository.graphAuthorization";
     public static final String ONTOLOGY_REPOSITORY = "repository.ontology";
     public static final String USER_SESSION_COUNTER_REPOSITORY = "repository.userSessionCounter";
     public static final String WORK_QUEUE_REPOSITORY = "repository.workQueue";
@@ -54,11 +54,10 @@ public class Configuration {
     public static final String ONTOLOGY_REPOSITORY_OWL = "repository.ontology.owl";
     public static final String ACL_PROVIDER_REPOSITORY = "repository.acl";
     public static final String FILE_SYSTEM_REPOSITORY = "repository.fileSystem";
-    public static final String AUTHORIZATION_MAPPER = "authorizationMapper";
+    public static final String AUTHORIZATION_REPOSITORY = "repository.authorization";
+    public static final String PRIVILEGE_REPOSITORY = "repository.privilege";
     public static final String GRAPH_PROVIDER = "graph";
     public static final String VISIBILITY_TRANSLATOR = "security.visibilityTranslator";
-    public static final String DEFAULT_PRIVILEGES = "newuser.privileges";
-    public static final String DEFAULT_AUTHORIZATIONS = "newuser.authorizations";
     public static final String WEB_CONFIGURATION_PREFIX = "web.ui.";
     public static final String WEB_GEOCODER_ENABLED = WEB_CONFIGURATION_PREFIX + "geocoder.enabled";
     public static final String MAPZEN_TILE_API_KEY = "mapzen.tile.api.key";
