@@ -171,6 +171,7 @@ public class Router extends HttpServlet {
             app.delete("/edge", authenticator, csrfProtector, EditPrivilegeFilter.class, EdgeDelete.class);
             app.delete("/edge/property", authenticator, csrfProtector, EditPrivilegeFilter.class, EdgeDeleteProperty.class);
             app.delete("/edge/comment", authenticator, csrfProtector, CommentPrivilegeFilter.class, EdgeDeleteProperty.class);
+            app.get("/edge/resolved-to", authenticator, csrfProtector, ReadPrivilegeFilter.class, EdgeGetResolvedTo.class);
             app.get("/edge/history", authenticator, csrfProtector, ReadPrivilegeFilter.class, EdgeGetHistory.class);
             app.get("/edge/property/history", authenticator, csrfProtector, ReadPrivilegeFilter.class, EdgeGetPropertyHistory.class);
             app.get("/edge/exists", authenticator, csrfProtector, ReadPrivilegeFilter.class, EdgeExists.class);

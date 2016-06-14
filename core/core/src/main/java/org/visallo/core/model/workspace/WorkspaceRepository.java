@@ -700,7 +700,7 @@ public abstract class WorkspaceRepository {
         VisalloProperties.VISIBILITY_JSON.setProperty(edgeExistingElementMutation, visibilityJson, metadata, visalloVisibility.getVisibility());
         edge = edgeExistingElementMutation.save(authorizations);
 
-        for (Vertex termMention : termMentionRepository.findResolvedTo(inVertex.getId(), authorizations)) {
+        for (Vertex termMention : termMentionRepository.findResolvedTo(inVertex, authorizations)) {
             termMentionRepository.updateVisibility(termMention, visalloVisibility.getVisibility(), authorizations);
         }
 

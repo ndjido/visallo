@@ -44,10 +44,29 @@ public class TermMentionRepositoryTest {
     public void testDelete() {
         Vertex v1 = graph.addVertex("v1", visibility, authorizations);
         Vertex v1tm1 = graph.addVertex("v1tm1", termMentionVisibility, authorizations);
-        VisalloProperties.TERM_MENTION_RESOLVED_EDGE_ID.setProperty(v1tm1, "v1_to_v2", termMentionVisibility, authorizations);
+        VisalloProperties.TERM_MENTION_RESOLVED_EDGE_ID.setProperty(
+                v1tm1,
+                "v1_to_v2",
+                termMentionVisibility,
+                authorizations
+        );
         Vertex v2 = graph.addVertex("v2", visibility, authorizations);
-        graph.addEdge("v1_to_c1tm1", v1, v1tm1, VisalloProperties.TERM_MENTION_LABEL_HAS_TERM_MENTION, termMentionVisibility, authorizations);
-        graph.addEdge("c1tm1_to_v2", v1tm1, v2, VisalloProperties.TERM_MENTION_LABEL_RESOLVED_TO, termMentionVisibility, authorizations);
+        graph.addEdge(
+                "v1_to_c1tm1",
+                v1,
+                v1tm1,
+                VisalloProperties.TERM_MENTION_LABEL_HAS_TERM_MENTION,
+                termMentionVisibility,
+                authorizations
+        );
+        graph.addEdge(
+                "c1tm1_to_v2",
+                v1tm1,
+                v2,
+                VisalloProperties.TERM_MENTION_LABEL_RESOLVED_TO,
+                termMentionVisibility,
+                authorizations
+        );
         Edge e = graph.addEdge("v1_to_v2", v1, v2, "link", visibility, authorizations);
         VisibilityJson visibilityJson = new VisibilityJson();
         visibilityJson.addWorkspace(WORKSPACE_ID);
@@ -62,29 +81,102 @@ public class TermMentionRepositoryTest {
     }
 
     @Test
-    public void testFindResolvedToForRef() {
+    public void testFindResolvedToForRefVertex() {
         Vertex v = graph.addVertex("v", visibility, authorizations);
         VertexBuilder tmBuilder = graph.prepareVertex("tm", termMentionVisibility);
         VisalloProperties.TERM_MENTION_REF_PROPERTY_KEY.setProperty(tmBuilder, "key", termMentionVisibility);
         VisalloProperties.TERM_MENTION_REF_PROPERTY_NAME.setProperty(tmBuilder, "name", termMentionVisibility);
+        VisalloProperties.TERM_MENTION_FOR_TYPE.setProperty(tmBuilder, TermMentionFor.PROPERTY, visibility);
+        VisalloProperties.TERM_MENTION_FOR_ELEMENT_ID.setProperty(tmBuilder, "v", visibility);
         Vertex tm = tmBuilder.save(authorizations);
-        graph.addEdge("tm_to_v", tm, v, VisalloProperties.TERM_MENTION_LABEL_RESOLVED_TO, termMentionVisibility, authorizations);
+        graph.addEdge(
+                "tm_to_v",
+                tm,
+                v,
+                VisalloProperties.TERM_MENTION_LABEL_RESOLVED_TO,
+                termMentionVisibility,
+                authorizations
+        );
         graph.flush();
 
-        List<Vertex> results = termMentionRepository.findResolvedToForRef(v.getId(), "key", "name", authorizations).collect(Collectors.toList());
+        List<Vertex> results = termMentionRepository.findResolvedToForRef(v, "key", "name", authorizations)
+                .collect(Collectors.toList());
         assertEquals(1, results.size());
         assertEquals("tm", results.get(0).getId());
     }
 
     @Test
-    public void findResolvedToForRefElement() {
-        Vertex v = graph.addVertex("v", visibility, authorizations);
+    public void testFindResolvedToForRefEdge() {
+        Vertex v1 = graph.addVertex("v1", visibility, authorizations);
+        Vertex v2 = graph.addVertex("v2", visibility, authorizations);
+        Edge e = graph.addEdge("e1", v1, v2, "edgeLabel", visibility, authorizations);
+
         VertexBuilder tmBuilder = graph.prepareVertex("tm", termMentionVisibility);
+        VisalloProperties.TERM_MENTION_REF_PROPERTY_KEY.setProperty(tmBuilder, "key", termMentionVisibility);
+        VisalloProperties.TERM_MENTION_REF_PROPERTY_NAME.setProperty(tmBuilder, "name", termMentionVisibility);
+        VisalloProperties.TERM_MENTION_FOR_TYPE.setProperty(tmBuilder, TermMentionFor.PROPERTY, visibility);
+        VisalloProperties.TERM_MENTION_FOR_ELEMENT_ID.setProperty(tmBuilder, "e1", visibility);
         Vertex tm = tmBuilder.save(authorizations);
-        graph.addEdge("tm_to_v", tm, v, VisalloProperties.TERM_MENTION_LABEL_RESOLVED_TO, termMentionVisibility, authorizations);
+        graph.addEdge(
+                "tm_to_v2",
+                tm,
+                v2,
+                VisalloProperties.TERM_MENTION_LABEL_RESOLVED_TO,
+                termMentionVisibility,
+                authorizations
+        );
         graph.flush();
 
-        List<Vertex> results = termMentionRepository.findResolvedToForRefElement(v.getId(), authorizations).collect(Collectors.toList());
+        List<Vertex> results = termMentionRepository.findResolvedToForRef(e, "key", "name", authorizations)
+                .collect(Collectors.toList());
+        assertEquals(1, results.size());
+        assertEquals("tm", results.get(0).getId());
+    }
+
+    @Test
+    public void findResolvedToForRefElementVertex() {
+        Vertex v = graph.addVertex("v", visibility, authorizations);
+        VertexBuilder tmBuilder = graph.prepareVertex("tm", termMentionVisibility);
+        VisalloProperties.TERM_MENTION_FOR_TYPE.setProperty(tmBuilder, TermMentionFor.VERTEX, visibility);
+        VisalloProperties.TERM_MENTION_FOR_ELEMENT_ID.setProperty(tmBuilder, "v", visibility);
+        Vertex tm = tmBuilder.save(authorizations);
+        graph.addEdge(
+                "tm_to_v",
+                tm,
+                v,
+                VisalloProperties.TERM_MENTION_LABEL_RESOLVED_TO,
+                termMentionVisibility,
+                authorizations
+        );
+        graph.flush();
+
+        List<Vertex> results = termMentionRepository.findResolvedToForRefElement(v, authorizations)
+                .collect(Collectors.toList());
+        assertEquals(1, results.size());
+        assertEquals("tm", results.get(0).getId());
+    }
+
+    @Test
+    public void findResolvedToForRefElementEdge() {
+        Vertex v1 = graph.addVertex("v1", visibility, authorizations);
+        Vertex v2 = graph.addVertex("v2", visibility, authorizations);
+        Edge e = graph.addEdge("e1", v1, v2, "edgeLabel", visibility, authorizations);
+        VertexBuilder tmBuilder = graph.prepareVertex("tm", termMentionVisibility);
+        VisalloProperties.TERM_MENTION_FOR_TYPE.setProperty(tmBuilder, TermMentionFor.EDGE, visibility);
+        VisalloProperties.TERM_MENTION_FOR_ELEMENT_ID.setProperty(tmBuilder, "e1", visibility);
+        Vertex tm = tmBuilder.save(authorizations);
+        graph.addEdge(
+                "tm_to_v2",
+                tm,
+                v2,
+                VisalloProperties.TERM_MENTION_LABEL_RESOLVED_TO,
+                termMentionVisibility,
+                authorizations
+        );
+        graph.flush();
+
+        List<Vertex> results = termMentionRepository.findResolvedToForRefElement(e, authorizations)
+                .collect(Collectors.toList());
         assertEquals(1, results.size());
         assertEquals("tm", results.get(0).getId());
     }

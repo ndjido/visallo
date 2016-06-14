@@ -308,7 +308,7 @@ public class WorkspaceHelper {
             // because we store term mentions with an added visibility we need to delete them with that added authorizations.
             //  we also need to notify the front-end of changes as well as audit the changes
             LOGGER.debug("unresolve terms");
-            for (Vertex termMention : termMentionRepository.findResolvedTo(vertex.getId(), authorizations)) {
+            for (Vertex termMention : termMentionRepository.findResolvedTo(vertex, authorizations)) {
                 unresolveTerm(termMention, authorizations);
             }
 
@@ -331,7 +331,7 @@ public class WorkspaceHelper {
     }
 
     private void unresolveTermMentionsForProperty(Vertex vertex, Property property, Authorizations authorizations) {
-        for (Vertex termMention : termMentionRepository.findResolvedTo(vertex.getId(), authorizations)) {
+        for (Vertex termMention : termMentionRepository.findResolvedTo(vertex, authorizations)) {
             String key = VisalloProperties.TERM_MENTION_REF_PROPERTY_KEY.getPropertyValue(termMention);
             String name = VisalloProperties.TERM_MENTION_REF_PROPERTY_NAME.getPropertyValue(termMention);
             String visibility = VisalloProperties.TERM_MENTION_REF_PROPERTY_VISIBILITY.getPropertyValue(termMention);

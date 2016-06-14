@@ -107,7 +107,7 @@ public class VertexiumWorkspaceSandboxingTest extends VertexiumWorkspaceReposito
         when(termMentionRepository.findByVertexIdAndProperty(anyString(), anyString(), anyString(),
                 any(Visibility.class), any(Authorizations.class)))
                 .thenReturn(Collections.emptyList());
-        when(termMentionRepository.findResolvedTo(anyString(), any(Authorizations.class)))
+        when(termMentionRepository.findResolvedTo(any(), any(Authorizations.class)))
                 .thenReturn(Collections.emptyList());
         when(termMentionRepository.findByEdgeId(anyString(), anyString(), any(Authorizations.class)))
                 .thenReturn(Collections.emptyList());

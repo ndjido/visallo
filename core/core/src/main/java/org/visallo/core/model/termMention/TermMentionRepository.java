@@ -5,6 +5,7 @@ import org.vertexium.*;
 import org.vertexium.mutation.ExistingElementMutation;
 import org.vertexium.util.FilterIterable;
 import org.vertexium.util.JoinIterable;
+import org.visallo.core.exception.VisalloException;
 import org.visallo.core.model.PropertyJustificationMetadata;
 import org.visallo.core.model.properties.VisalloProperties;
 import org.visallo.core.model.user.AuthorizationRepository;
@@ -15,6 +16,7 @@ import org.visallo.core.util.VisalloLoggerFactory;
 import org.visallo.web.clientapi.model.ClientApiSourceInfo;
 import org.visallo.web.clientapi.model.ClientApiTermMentionsResponse;
 
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -251,26 +253,58 @@ public class TermMentionRepository {
         }
     }
 
-    public Iterable<Vertex> findResolvedTo(String inVertexId, Authorizations authorizations) {
+    public Iterable<Vertex> findResolvedTo(Element element, Authorizations authorizations) {
         Authorizations authorizationsWithTermMention = getAuthorizations(authorizations);
-        Vertex inVertex = graph.getVertex(inVertexId, authorizationsWithTermMention);
-        return inVertex.getVertices(
+        Vertex inVertex;
+        if (element instanceof Vertex) {
+            inVertex = graph.getVertex(element.getId(), authorizationsWithTermMention);
+        } else if (element instanceof Edge) {
+            String inVertexId = ((Edge) element).getVertexId(Direction.IN);
+            inVertex = graph.getVertex(inVertexId, authorizationsWithTermMention);
+        } else {
+            throw new VisalloException("Unhandled element type: " + element.getClass().getName());
+        }
+        Iterable<Vertex> termMentionVertices = inVertex.getVertices(
                 Direction.IN,
                 VisalloProperties.TERM_MENTION_LABEL_RESOLVED_TO,
                 authorizationsWithTermMention
         );
+        return stream(termMentionVertices)
+                .filter(v -> {
+                    String forElementId = VisalloProperties.TERM_MENTION_FOR_ELEMENT_ID.getPropertyValue(v);
+                    if (!element.getId().equals(forElementId)) {
+                        return false;
+                    }
+
+                    TermMentionFor forType = VisalloProperties.TERM_MENTION_FOR_TYPE.getPropertyValue(v);
+                    if (forType == null) {
+                        return false;
+                    }
+                    if (forType == TermMentionFor.PROPERTY) {
+                        return true;
+                    }
+                    if (element instanceof Vertex && forType == TermMentionFor.VERTEX) {
+                        return true;
+                    }
+                    if (element instanceof Edge && forType == TermMentionFor.EDGE) {
+                        return true;
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
     }
 
     public Stream<Vertex> findResolvedToForRef(
-            String inVertexId,
+            Element element,
             String refPropertyKey,
             String refPropertyName,
             Authorizations authorizations
     ) {
+        checkNotNull(element, "element cannot be null");
         checkNotNull(refPropertyKey, "refPropertyKey cannot be null");
         checkNotNull(refPropertyName, "refPropertyName cannot be null");
 
-        return stream(findResolvedTo(inVertexId, authorizations))
+        return stream(findResolvedTo(element, authorizations))
                 .filter(vertex -> {
                     String vertexRefPropertyKey = VisalloProperties.TERM_MENTION_REF_PROPERTY_KEY.getPropertyValue(
                             vertex,
@@ -287,8 +321,8 @@ public class TermMentionRepository {
     /**
      * Gets all the resolve to term mentions for the element not a particular property.
      */
-    public Stream<Vertex> findResolvedToForRefElement(String inVertexId, Authorizations authorizations) {
-        return stream(findResolvedTo(inVertexId, authorizations))
+    public Stream<Vertex> findResolvedToForRefElement(Element element, Authorizations authorizations) {
+        return stream(findResolvedTo(element, authorizations))
                 .filter(vertex -> {
                     String vertexRefPropertyKey = VisalloProperties.TERM_MENTION_REF_PROPERTY_KEY.getPropertyValue(
                             vertex,
