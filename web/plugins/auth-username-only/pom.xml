@@ -12,4 +12,17 @@
 
     <artifactId>visallo-web-auth-username-only</artifactId>
     <name>Visallo: Web: Plugin: Username-only Authentication</name>
+
+    <profiles>
+        <profile>
+            <id>dist</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

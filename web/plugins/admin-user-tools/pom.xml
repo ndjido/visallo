@@ -13,4 +13,16 @@
     <artifactId>visallo-web-plugins-admin-user-tools</artifactId>
     <name>Visallo: Web: Plugin: Admin User Tools</name>
 
+    <profiles>
+        <profile>
+            <id>dist</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

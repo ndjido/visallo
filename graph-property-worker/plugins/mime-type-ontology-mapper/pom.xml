@@ -12,4 +12,17 @@
 
     <artifactId>visallo-gpw-mime-type-ontology-mapper</artifactId>
     <name>Visallo: GraphPropertyWorker: Plugin: Mime Type Ontology Mapper</name>
+
+    <profiles>
+        <profile>
+            <id>dist</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

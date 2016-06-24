@@ -12,4 +12,17 @@
 
     <artifactId>visallo-web-change-email</artifactId>
     <name>Visallo: Web: Plugin: Change Email</name>
+
+    <profiles>
+        <profile>
+            <id>dist</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

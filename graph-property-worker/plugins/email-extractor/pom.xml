@@ -12,4 +12,17 @@
 
     <artifactId>visallo-gpw-email-extractor</artifactId>
     <name>Visallo: GraphPropertyWorker: Plugin: E-Mail Address Extractor</name>
+
+    <profiles>
+        <profile>
+            <id>dist</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

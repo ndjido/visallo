@@ -12,4 +12,17 @@
 
     <artifactId>visallo-gpw-zipcode-extractor</artifactId>
     <name>Visallo: GraphPropertyWorker: Plugin: Zip Code Extractor</name>
+
+    <profiles>
+        <profile>
+            <id>dist</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

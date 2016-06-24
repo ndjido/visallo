@@ -143,6 +143,34 @@
         </profile>
 
         <profile>
+            <id>dist</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-assembly-plugin</artifactId>
+                            <configuration>
+                                <tarLongFileMode>posix</tarLongFileMode>
+                                <descriptors>
+                                    <descriptor>${project.basedir}/../../../assembly.xml</descriptor>
+                                </descriptors>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>make-assembly</id>
+                                    <phase>package</phase>
+                                    <goals>
+                                        <goal>single</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <profile>
             <id>release-tasks</id>
             <activation>
                 <!-- mvn release:perform sets this to true -->

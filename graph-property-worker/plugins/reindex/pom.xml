@@ -12,4 +12,17 @@
 
     <artifactId>visallo-gpw-reindex</artifactId>
     <name>Visallo: GraphPropertyWorker: Plugin: Search Reindex</name>
+
+    <profiles>
+        <profile>
+            <id>dist</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
