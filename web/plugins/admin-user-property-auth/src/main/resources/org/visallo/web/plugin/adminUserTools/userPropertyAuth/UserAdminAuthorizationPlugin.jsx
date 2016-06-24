@@ -85,7 +85,7 @@ define([
                             <li key={auth} className="auth-item highlight-on-hover">
                                 <button className="btn btn-mini btn-danger show-on-hover"
                                         onClick={()=>this.handleAuthorizationDeleteClick(auth)}
-                                        disabled={this.state.saveInProgress ? 'disabled' : ''}>
+                                        disabled={this.state.saveInProgress}>
                                     {i18n('admin.user.editor.userAdminAuthorization.deleteAuthorization')}
                                 </button>
                                 <span style={{lineHeight: '1.2em'}}>{auth}</span>
@@ -97,9 +97,9 @@ define([
                         <input style={{marginTop: '0.5em'}} className="auth" ref="addAuthorization"
                                placeholder="Add Authorization"
                                type="text"
-                               disabled={this.state.saveInProgress ? 'disabled' : ''}/>
+                               disabled={this.state.saveInProgress}/>
                         <button
-                            disabled={this.state.saveInProgress ? 'disabled' : ''}>
+                            disabled={this.state.saveInProgress}>
                             {i18n('admin.user.editor.userAdminAuthorization.addAuthorization')}
                         </button>
                     </form>
