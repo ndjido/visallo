@@ -95,7 +95,7 @@ define([
 
                     <form onSubmit={this.handleAddAuthorizationSubmit}>
                         <input style={{marginTop: '0.5em'}} className="auth" ref="addAuthorization"
-                               placeholder="Add Authorization"
+                               placeholder={i18n('admin.user.editor.userAdminAuthorization.addAuthorizationPlaceholder')}
                                type="text"
                                disabled={this.state.saveInProgress}/>
                         <button
