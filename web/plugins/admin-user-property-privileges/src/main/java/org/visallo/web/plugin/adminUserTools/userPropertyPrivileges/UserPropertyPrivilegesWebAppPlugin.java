@@ -25,6 +25,7 @@ public class UserPropertyPrivilegesWebAppPlugin implements WebAppPlugin {
         app.registerJavaScriptTemplate(
                 "/org/visallo/web/plugin/adminUserTools/userPropertyPrivileges/UserAdminPrivilegesPlugin.jsx"
         );
+        app.registerResourceBundle("/org/visallo/web/plugin/adminUserTools/userPropertyPrivileges/messages.properties");
 
         app.post(
                 "/user/privileges/update",

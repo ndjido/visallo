@@ -79,7 +79,7 @@ define([
         render() {
             return (
                 <div>
-                    <div className="nav-header">Privileges</div>
+                    <div className="nav-header">{i18n('admin.user.editor.userAdminPrivilege.privileges')}</div>
                     <ReactAlert error={this.state.error} onDismiss={this.handleAlertDismiss}/>
                     <ul>
                         { Object.keys(this.state.privileges).sort().map((priv) => {
