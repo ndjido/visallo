@@ -33,7 +33,7 @@ define([
                 saveInProgress: true
             });
 
-            const newAuthorizations = this.state.authorizations.concat([authorization]);
+            const newAuthorizations = [...this.state.authorizations, authorization];
 
             this.dataRequest('com-visallo-userAdminAuthorization', 'userAuthAdd', this.props.user.userName, authorization)
                 .then(() => {
