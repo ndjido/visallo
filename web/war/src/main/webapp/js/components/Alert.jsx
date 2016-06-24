@@ -3,6 +3,11 @@ define([
 ], function (React) {
 
     const Alert = React.createClass({
+        propTypes: {
+            error: React.PropTypes.any.isRequired,
+            onDismiss: React.PropTypes.func
+        },
+
         componentWillReceiveProps(nextProps) {
             if (nextProps.error && nextProps.error !== this.props.error) {
                 console.error(nextProps.error);
@@ -39,6 +44,12 @@ define([
             return null;
         },
 
+        handleDismissClick(e) {
+            if (this.props.onDismiss) {
+                this.props.onDismiss(e);
+            }
+        },
+
         render() {
             if (!this.props.error) {
                 return null;
@@ -46,7 +57,7 @@ define([
 
             return (
                 <div className="alert alert-error">
-                    <button type="button" className="close" onClick={this.props.onDismiss}>&times;</button>
+                    <button type="button" className="close" onClick={this.handleDismissClick}>&times;</button>
                     {this.renderType()}
                     {this.renderMessage()}
                 </div>
