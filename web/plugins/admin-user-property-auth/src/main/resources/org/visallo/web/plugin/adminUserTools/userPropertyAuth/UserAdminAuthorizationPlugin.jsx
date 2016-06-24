@@ -12,7 +12,8 @@ define([
         getInitialState() {
             return {
                 authorizations: this.props.user.authorizations,
-                saveInProgress: false
+                saveInProgress: false,
+                addAuthorizationValue: ''
             };
         },
 
@@ -25,7 +26,7 @@ define([
 
         handleAddAuthorizationSubmit(e) {
             e.preventDefault();
-            this.addAuthorization(this.refs.addAuthorization.value);
+            this.addAuthorization(this.state.addAuthorizationValue);
         },
 
         addAuthorization(authorization){
@@ -37,8 +38,8 @@ define([
 
             this.dataRequest('com-visallo-userAdminAuthorization', 'userAuthAdd', this.props.user.userName, authorization)
                 .then(() => {
-                    this.refs.addAuthorization.value = '';
                     this.setState({
+                        addAuthorizationValue: '',
                         authorizations: newAuthorizations,
                         saveInProgress: false,
                         error: null
@@ -75,6 +76,12 @@ define([
             });
         },
 
+        handleAddAuthorizationInputChange(e) {
+            this.setState({
+                addAuthorizationValue: e.target.value
+            });
+        },
+
         render() {
             return (
                 <div>
@@ -94,9 +101,12 @@ define([
                     </ul>
 
                     <form onSubmit={this.handleAddAuthorizationSubmit}>
-                        <input style={{marginTop: '0.5em'}} className="auth" ref="addAuthorization"
+                        <input style={{marginTop: '0.5em'}}
+                               className="auth"
                                placeholder={i18n('admin.user.editor.userAdminAuthorization.addAuthorizationPlaceholder')}
                                type="text"
+                               value={this.state.addAuthorizationValue}
+                               onChange={this.handleAddAuthorizationInputChange}
                                disabled={this.state.saveInProgress}/>
                         <button
                             disabled={this.state.saveInProgress}>
