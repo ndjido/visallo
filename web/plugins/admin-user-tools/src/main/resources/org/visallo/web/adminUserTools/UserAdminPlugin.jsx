@@ -64,22 +64,22 @@ define([
                         onUserLoaded={this.handleUserLoaded}/>
                     { this.state.user ? (
                         <div>
-                            <div className="nav-header">User Info</div>
+                            <div className="nav-header">{i18n('admin.user.editor.info.header')}</div>
                             <ul>
                                 <li>
-                                    <label className="nav-header">ID</label>
+                                    <label className="nav-header">{i18n('admin.user.editor.info.id')}</label>
                                     <span>{this.state.user.id}</span>
                                 </li>
                                 <li>
-                                    <label className="nav-header">E-Mail</label>
+                                    <label className="nav-header">{i18n('admin.user.editor.info.email')}</label>
                                     <span>{this.state.user.email || i18n('admin.user.editor.notSet')}</span>
                                 </li>
                                 <li>
-                                    <label className="nav-header">Display Name</label>
+                                    <label className="nav-header">{i18n('admin.user.editor.info.displayName')}</label>
                                     <span>{this.state.user.displayName || i18n('admin.user.editor.notSet')}</span>
                                 </li>
                                 <li>
-                                    <label className="nav-header">Status</label>
+                                    <label className="nav-header">{i18n('admin.user.editor.info.status')}</label>
                                     <span>{this.state.user.status}</span>
                                 </li>
                             </ul>
