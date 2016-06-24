@@ -64,7 +64,7 @@ define([
                     <label>
                         <input value={priv} type="checkbox" onChange={()=>this.handleCheckboxChange(priv)}
                                disabled={this.state.saveInProgress}
-                               checked={hasPrivilege ? 'checked' : ''}/> {priv}
+                               checked={hasPrivilege}/> {priv}
                     </label>
                 </li>
             )
