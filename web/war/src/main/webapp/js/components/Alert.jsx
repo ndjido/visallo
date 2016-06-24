@@ -4,7 +4,7 @@ define([
 
     const Alert = React.createClass({
         propTypes: {
-            error: React.PropTypes.any.isRequired,
+            error: React.PropTypes.any,
             onDismiss: React.PropTypes.func
         },
 
