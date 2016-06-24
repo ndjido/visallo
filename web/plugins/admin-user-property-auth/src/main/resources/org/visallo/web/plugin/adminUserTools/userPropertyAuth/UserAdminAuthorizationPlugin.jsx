@@ -78,7 +78,7 @@ define([
         render() {
             return (
                 <div>
-                    <div className="nav-header">Authorizations</div>
+                    <div className="nav-header">{i18n('admin.user.editor.userAdminAuthorization.authorizations')}</div>
                     <ReactAlert error={this.state.error} onDismiss={this.handleAlertDismiss}/>
                     <ul>
                         { this.state.authorizations.map((auth) => (
