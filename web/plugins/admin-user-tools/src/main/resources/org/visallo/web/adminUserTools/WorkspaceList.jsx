@@ -46,7 +46,7 @@ define([
         render() {
             return (
                 <div>
-                    <div className="nav-header">Workspaces</div>
+                    <div className="nav-header">{i18n('admin.user.editor.workspaces.header')}</div>
                     <ul>
                         {
                             this.props.user.workspaces.map((workspace) => {
