@@ -3,12 +3,12 @@ define([
     'public/v1/api',
     'jsx!./WorkspaceList',
     'jsx!./UserTypeaheadInput',
-    'jsx!util/react-alert'
+    'jsx!components/Alert'
 ], function (React,
              visallo,
              WorkspaceList,
              UserTypeaheadInput,
-             ReactAlert) {
+             Alert) {
 
     const LoadUser = React.createClass({
         dataRequest: null,
@@ -76,7 +76,7 @@ define([
         render() {
             return (
                 <form onSubmit={this.handleFormSubmit}>
-                    <ReactAlert error={this.state.error} onDismiss={this.handleAlertDismiss}/>
+                    <Alert error={this.state.error} onDismiss={this.handleAlertDismiss}/>
                     <div className="nav-header">{i18n('admin.user.editor.username')}</div>
                     <UserTypeaheadInput username={this.state.username} onChange={this.handleUsernameChange}
                                         onSelected={this.handleUsernameSelected}/>

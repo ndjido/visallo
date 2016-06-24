@@ -2,7 +2,7 @@ define([
     'react'
 ], function (React) {
 
-    const ReactAlert = React.createClass({
+    const Alert = React.createClass({
         componentWillReceiveProps(nextProps) {
             if (nextProps.error && nextProps.error !== this.props.error) {
                 console.error(nextProps.error);
@@ -54,5 +54,5 @@ define([
         }
     });
 
-    return ReactAlert;
+    return Alert;
 });

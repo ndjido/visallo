@@ -1,10 +1,10 @@
 define([
     'react',
     'public/v1/api',
-    'jsx!util/react-alert'
+    'jsx!components/Alert'
 ], function (React,
              visallo,
-             ReactAlert) {
+             Alert) {
 
     const UserAdminAuthorizationPlugin = React.createClass({
         dataRequest: null,
@@ -86,7 +86,7 @@ define([
             return (
                 <div>
                     <div className="nav-header">{i18n('admin.user.editor.userAdminAuthorization.authorizations')}</div>
-                    <ReactAlert error={this.state.error} onDismiss={this.handleAlertDismiss}/>
+                    <Alert error={this.state.error} onDismiss={this.handleAlertDismiss}/>
                     <ul>
                         { this.state.authorizations.map((auth) => (
                             <li key={auth} className="auth-item highlight-on-hover">

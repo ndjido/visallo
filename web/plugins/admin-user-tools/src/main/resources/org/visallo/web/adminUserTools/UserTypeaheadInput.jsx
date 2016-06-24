@@ -1,12 +1,8 @@
 define([
     'react',
-    'public/v1/api',
-    'jsx!./WorkspaceList',
-    'jsx!util/react-alert'
+    'public/v1/api'
 ], function (React,
-             visallo,
-             WorkspaceList,
-             ReactAlert) {
+             visallo) {
 
     const UserTypeaheadInput = React.createClass({
         dataRequest: null,

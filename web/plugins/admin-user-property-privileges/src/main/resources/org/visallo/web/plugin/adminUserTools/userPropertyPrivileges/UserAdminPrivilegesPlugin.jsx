@@ -2,11 +2,11 @@ define([
     'react',
     'public/v1/api',
     'util/requirejs/promise!util/service/propertiesPromise',
-    'jsx!util/react-alert'
+    'jsx!components/Alert'
 ], function (React,
              visallo,
              configProperties,
-             ReactAlert) {
+             Alert) {
 
     const UserAdminPrivilegesPlugin = React.createClass({
         dataRequest: null,
@@ -80,7 +80,7 @@ define([
             return (
                 <div>
                     <div className="nav-header">{i18n('admin.user.editor.userAdminPrivilege.privileges')}</div>
-                    <ReactAlert error={this.state.error} onDismiss={this.handleAlertDismiss}/>
+                    <Alert error={this.state.error} onDismiss={this.handleAlertDismiss}/>
                     <ul>
                         { Object.keys(this.state.privileges).sort().map((priv) => {
                             return this.renderPrivilege(priv, this.state.privileges[priv]);
