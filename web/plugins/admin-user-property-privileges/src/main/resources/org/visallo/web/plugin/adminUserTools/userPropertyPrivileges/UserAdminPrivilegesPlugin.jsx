@@ -9,6 +9,14 @@ define([
              Alert) {
 
     const UserAdminPrivilegesPlugin = React.createClass({
+        propTypes: {
+            // The user for which the authorizations will be edited
+            user: React.PropTypes.shape({
+                userName: React.PropTypes.string.isRequired,
+                privileges: React.PropTypes.array.isRequired
+            })
+        },
+
         dataRequest: null,
 
         getInitialState() {

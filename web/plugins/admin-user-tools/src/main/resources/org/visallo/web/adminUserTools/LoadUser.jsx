@@ -1,12 +1,10 @@
 define([
     'react',
     'public/v1/api',
-    'jsx!./WorkspaceList',
     'jsx!./UserTypeaheadInput',
     'jsx!components/Alert'
 ], function (React,
              visallo,
-             WorkspaceList,
              UserTypeaheadInput,
              Alert) {
 

@@ -7,10 +7,19 @@ define([
              Alert) {
 
     const UserAdminAuthorizationPlugin = React.createClass({
+        propTypes: {
+            // The user for which the authorizations will be edited
+            user: React.PropTypes.shape({
+                userName: React.PropTypes.string.isRequired,
+                authorizations: React.PropTypes.array.isRequired
+            })
+        },
+
         dataRequest: null,
 
         getInitialState() {
             return {
+                error: null,
                 authorizations: this.props.user.authorizations,
                 saveInProgress: false,
                 addAuthorizationValue: ''

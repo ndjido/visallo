@@ -5,6 +5,17 @@ define([
              visallo) {
 
     const UserTypeaheadInput = React.createClass({
+        propTypes: {
+            // callback when the typeahead input is changed
+            onChange: React.PropTypes.func.isRequired,
+
+            // callback when a user is selected
+            onSelected: React.PropTypes.func.isRequired,
+
+            // The current value of the typeahead input
+            username: React.PropTypes.string
+        },
+
         dataRequest: null,
 
         componentWillMount() {
