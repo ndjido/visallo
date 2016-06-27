@@ -466,28 +466,17 @@ define([], function() {
 
             return Promise.all([
                 this.getConfigurationMaxHistory(),
-                Promise.require('util/vertex/formatters'),
-                this.dataRequestPromise.then(function(dataRequest) {
-                    return dataRequest('ontology', 'relationships')
-                }),
                 this.dataRequestPromise
-            ]).then(function(results) {
-                var max = results.shift(),
-                    F = results.shift(),
-                    relationships = results.shift(),
-                    dataRequest = results.shift(),
-                    notHidden = _.reject(self.selectedObjectsStack, function(s) {
-                        return s.hide;
-                    }),
-                    vertexIdsToRequest = _.chain(self.selectedObjectsStack)
+            ]).spread(function(max, dataRequest) {
+                var vertexIdsToRequest = _.chain(self.selectedObjectsStack)
                         .filter(function(s) {
                             return s.vertexIds.length === 1;
                         })
                         .map(function(s) {
                             return s.vertexIds[0];
                         })
-                        .value(),
-                    edgeIdsToRequest = _.chain(self.selectedObjectsStack)
+                        .value();
+                var edgeIdsToRequest = _.chain(self.selectedObjectsStack)
                         .filter(function(s) {
                             return s.edgeIds.length;
                         })
@@ -495,10 +484,8 @@ define([], function() {
                             return s.edgeIds;
                         })
                         .flatten()
-                        .value(),
-                    edgesById;
-
-                self.setPublicApi('selectedObjectsStack', notHidden.slice(Math.max(0, notHidden.length - max)));
+                        .value();
+                var edgesById;
 
                 return (edgeIdsToRequest.length ?
                         dataRequest('edge', 'store', { edgeIds: _.unique(edgeIdsToRequest) }) :
@@ -528,80 +515,100 @@ define([], function() {
                             }
                         });
 
-                        self.selectedObjectsStack = _.chain(self.selectedObjectsStack)
-                            .map(function(stack) {
-                                stack.edgeIds = _.difference(stack.edgeIds, removedEdgeIds);
+                        self.checkStackForRemovedEdges(removedEdgeIds);
 
-                                var numSelections = stack.edgeIds.length + stack.vertexIds.length;
-                                stack.multiple = numSelections > 1;
-                                if (numSelections === 0) {
-                                    stack = null;
-                                }
-
-                                return stack;
-                            })
-                            .unique(function(stack) {
-                                if (stack) {
-                                    var stackIds = stack.vertexIds.concat(stack.edgeIds);
-                                    var sortedIds = _.sortBy(stackIds);
-                                    sortedIds.push(stack.hide);
-                                    return sortedIds.toString()
-                                } else {
-                                    return '';
-                                }
-                            })
-                            .compact()
-                            .value();
-                        notHidden = _.reject(self.selectedObjectsStack, function(s) {
-                            return s.hide;
-                        });
-
-                        notHidden.forEach(function(s) {
-                            var hadVertexIds = s.vertexIds.length;
-                            if (!s.multiple) {
-                                s.vertexIds = _.filter(s.vertexIds, function(vertexId) {
-                                    return vertexId in verticesById;
+                        return self.updateStackLabels(verticesById, edgesById)
+                            .then(function() {
+                                var notHidden = _.reject(self.selectedObjectsStack, function(s) {
+                                    return s.hide;
                                 });
-                                s.edgeIds = _.filter(s.edgeIds, function(edgeId) {
-                                    return edgeId in edgesById;
-                                });
-                            }
-
-                            if (s.vertexIds.length && s.edgeIds.length) {
-                                s.title = F.number.pretty(s.vertexIds.length + s.edgeIds.length) + ' items';
-                            } else if (hadVertexIds) {
-                                if (s.vertexIds.length === 1) {
-                                    s.title = F.vertex.title(verticesById[s.vertexIds[0]]);
-                                } else if (s.vertexIds.length) {
-                                    s.title = F.number.pretty(s.vertexIds.length) + ' entities';
-                                } else {
-                                    s.hide = true;
-                                }
-                            } else if (s.edgeIds.length === 1) {
-                                var edge = edgesById[s.edgeIds[0]],
-                                    source = edge && verticesById[edge.outVertexId],
-                                    target = edge && verticesById[edge.inVertexId],
-                                    ontologyEdge = edge && relationships.byTitle[edge.label],
-                                    label = ' → ';
-                                if (source && target) {
-                                    s.title = [
-                                        F.string.truncate(F.vertex.title(source), 2),
-                                        F.string.truncate(F.vertex.title(target), 2)
-                                    ].join(label);
-                                } else {
-                                    s.hide = true;
-                                }
-                            } else if (s.edgeIds.length) {
-                                s.title = F.number.pretty(s.edgeIds.length) + ' relationships';
-                            } else {
-                                s.hide = true;
-                            }
-                        });
-                        notHidden = _.reject(self.selectedObjectsStack, function(s) {
-                            return s.hide;
-                        });
-                        self.setPublicApi('selectedObjectsStack', notHidden.slice(Math.max(0, notHidden.length - max)));
+                                self.setPublicApi('selectedObjectsStack', notHidden.slice(Math.max(0, notHidden.length - max)));
+                            });
                     });
+            });
+        };
+
+        this.checkStackForRemovedEdges = function(edgeIds) {
+            this.selectedObjectsStack = _.chain(this.selectedObjectsStack)
+                .map(function(stack) {
+                    stack.edgeIds = _.difference(stack.edgeIds, edgeIds);
+
+                    var numSelections = stack.edgeIds.length + stack.vertexIds.length;
+                    stack.multiple = numSelections > 1;
+                    if (numSelections === 0) {
+                        stack = null;
+                    }
+
+                    return stack;
+                })
+                .unique(function(stack) {
+                    if (stack) {
+                        var stackIds = stack.vertexIds.concat(stack.edgeIds);
+                        var sortedIds = _.sortBy(stackIds);
+                        sortedIds.push(stack.hide);
+                        return sortedIds.toString()
+                    } else {
+                        return '';
+                    }
+                })
+                .compact()
+                .value();
+        };
+
+        this.updateStackLabels = function(verticesById, edgesById) {
+            var self = this;
+
+            return Promise.all([
+               Promise.require('util/vertex/formatters'),
+               this.dataRequestPromise.then(function(dataRequest) {
+                   return dataRequest('ontology', 'relationships')
+               })
+            ]).spread(function(F, relationships) {
+                var notHidden = _.reject(self.selectedObjectsStack, function(s) {
+                    return s.hide;
+                });
+
+                notHidden.forEach(function(s) {
+                    var hadVertexIds = s.vertexIds.length;
+                    if (!s.multiple) {
+                        s.vertexIds = _.filter(s.vertexIds, function(vertexId) {
+                            return vertexId in verticesById;
+                        });
+                        s.edgeIds = _.filter(s.edgeIds, function(edgeId) {
+                            return edgeId in edgesById;
+                        });
+                    }
+
+                    if (s.vertexIds.length && s.edgeIds.length) {
+                        s.title = F.number.pretty(s.vertexIds.length + s.edgeIds.length) + ' items';
+                    } else if (hadVertexIds) {
+                        if (s.vertexIds.length === 1) {
+                            s.title = F.vertex.title(verticesById[s.vertexIds[0]]);
+                        } else if (s.vertexIds.length) {
+                            s.title = F.number.pretty(s.vertexIds.length) + ' entities';
+                        } else {
+                            s.hide = true;
+                        }
+                    } else if (s.edgeIds.length === 1) {
+                        var edge = edgesById[s.edgeIds[0]],
+                            source = edge && verticesById[edge.outVertexId],
+                            target = edge && verticesById[edge.inVertexId],
+                            ontologyEdge = edge && relationships.byTitle[edge.label],
+                            label = ' → ';
+                        if (source && target) {
+                            s.title = [
+                                F.string.truncate(F.vertex.title(source), 2),
+                                F.string.truncate(F.vertex.title(target), 2)
+                            ].join(label);
+                        } else {
+                            s.hide = true;
+                        }
+                    } else if (s.edgeIds.length) {
+                        s.title = F.number.pretty(s.edgeIds.length) + ' relationships';
+                    } else {
+                        s.hide = true;
+                    }
+                });
             });
         };
     }
