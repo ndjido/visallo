@@ -16,9 +16,11 @@ import org.visallo.core.model.ontology.Relationship;
 import org.visallo.core.model.properties.VisalloProperties;
 import org.visallo.core.model.properties.types.PropertyMetadata;
 import org.visallo.core.user.User;
-import org.visallo.web.clientapi.model.*;
+import org.visallo.web.clientapi.model.ClientApiElementAcl;
+import org.visallo.web.clientapi.model.ClientApiPropertyAcl;
+import org.visallo.web.clientapi.model.Privilege;
+import org.visallo.web.clientapi.model.VisibilityJson;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,17 +68,6 @@ public class ACLProviderTest {
     public void before() {
         // mock ACLProvider abstract methods, but call implemented methods
         aclProvider = mock(ACLProvider.class);
-        when(aclProvider.elementACL(any(Element.class), any(User.class), any(OntologyRepository.class)))
-                .thenCallRealMethod();
-        when(aclProvider.appendACL(any(ClientApiObject.class), any(User.class))).thenCallRealMethod();
-        when(aclProvider.isAuthor(any(Element.class), anyString(), anyString(), any(User.class))).thenCallRealMethod();
-        when(aclProvider.isComment(anyString())).thenCallRealMethod();
-        when(aclProvider.hasPrivilege(any(User.class), any(String.class))).thenCallRealMethod();
-        doCallRealMethod().when(aclProvider).appendACL(any(Collection.class), any(User.class));
-        doCallRealMethod().when(aclProvider)
-                          .checkCanAddOrUpdateProperty(any(Element.class), anyString(), anyString(), any(User.class));
-        doCallRealMethod().when(aclProvider)
-                          .checkCanDeleteProperty(any(Element.class), anyString(), anyString(), any(User.class));
 
         when(user1.getUserId()).thenReturn("USER_1");
         when(user1.getPrivileges()).thenReturn(ImmutableSet.of(Privilege.EDIT, Privilege.COMMENT));
