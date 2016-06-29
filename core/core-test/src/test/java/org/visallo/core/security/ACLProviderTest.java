@@ -1,6 +1,7 @@
 package org.visallo.core.security;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,10 +16,7 @@ import org.visallo.core.model.ontology.Relationship;
 import org.visallo.core.model.properties.VisalloProperties;
 import org.visallo.core.model.properties.types.PropertyMetadata;
 import org.visallo.core.user.User;
-import org.visallo.web.clientapi.model.ClientApiElementAcl;
-import org.visallo.web.clientapi.model.ClientApiObject;
-import org.visallo.web.clientapi.model.ClientApiPropertyAcl;
-import org.visallo.web.clientapi.model.VisibilityJson;
+import org.visallo.web.clientapi.model.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -58,6 +56,8 @@ public class ACLProviderTest {
     @Mock private Property user1CommentProperty;
     @Mock private User user1;
     @Mock private User user2;
+    @Mock private User userWithCommentEditAny;
+    @Mock private User userWithCommentDeleteAny;
 
     private ACLProvider aclProvider;
 
@@ -71,6 +71,7 @@ public class ACLProviderTest {
         when(aclProvider.appendACL(any(ClientApiObject.class), any(User.class))).thenCallRealMethod();
         when(aclProvider.isAuthor(any(Element.class), anyString(), anyString(), any(User.class))).thenCallRealMethod();
         when(aclProvider.isComment(anyString())).thenCallRealMethod();
+        when(aclProvider.hasPrivilege(any(User.class), any(String.class))).thenCallRealMethod();
         doCallRealMethod().when(aclProvider).appendACL(any(Collection.class), any(User.class));
         doCallRealMethod().when(aclProvider)
                           .checkCanAddOrUpdateProperty(any(Element.class), anyString(), anyString(), any(User.class));
@@ -78,7 +79,18 @@ public class ACLProviderTest {
                           .checkCanDeleteProperty(any(Element.class), anyString(), anyString(), any(User.class));
 
         when(user1.getUserId()).thenReturn("USER_1");
+        when(user1.getPrivileges()).thenReturn(ImmutableSet.of(Privilege.EDIT, Privilege.COMMENT));
+
         when(user2.getUserId()).thenReturn("USER_2");
+        when(user2.getPrivileges()).thenReturn(ImmutableSet.of(Privilege.EDIT, Privilege.COMMENT));
+
+        when(userWithCommentEditAny.getUserId()).thenReturn("USER_WITH_COMMENT_EDIT_ANY");
+        when(userWithCommentEditAny.getPrivileges())
+                .thenReturn(ImmutableSet.of(Privilege.EDIT, Privilege.COMMENT_EDIT_ANY));
+
+        when(userWithCommentDeleteAny.getUserId()).thenReturn("USER_WITH_COMMENT_DELETE_ANY");
+        when(userWithCommentDeleteAny.getPrivileges())
+                .thenReturn(ImmutableSet.of(Privilege.EDIT, Privilege.COMMENT_DELETE_ANY));
 
         when(ontologyRepository.getConceptByIRI("vertex")).thenReturn(vertexConcept);
         when(ontologyRepository.getConceptByIRI("parent")).thenReturn(parentConcept);
@@ -177,6 +189,14 @@ public class ACLProviderTest {
     }
 
     @Test
+    public void checkCanAddOrUpdatePropertyShouldNotThrowWhenPrivilegedUserUpdatesAnotherUsersComment() {
+        setupForCommentPropertyTests();
+
+        aclProvider.checkCanAddOrUpdateProperty(
+                vertex, COMMENT_PROP_KEY, COMMENT.getPropertyName(), userWithCommentEditAny);
+    }
+
+    @Test
     public void checkCanDeletePropertyShouldNotThrowWhenUserDeletesOwnComment() {
         setupForCommentPropertyTests();
 
@@ -190,6 +210,14 @@ public class ACLProviderTest {
         aclProvider.checkCanDeleteProperty(vertex, COMMENT_PROP_KEY, COMMENT.getPropertyName(), user2);
     }
 
+    @Test
+    public void checkCanDeletePropertyShouldNotThrowWhenPrivilegedUserDeletesAnotherUsersComment() {
+        setupForCommentPropertyTests();
+
+        aclProvider.checkCanDeleteProperty(
+                vertex, COMMENT_PROP_KEY, COMMENT.getPropertyName(), userWithCommentDeleteAny);
+    }
+
     private void setupForCommentPropertyTests() {
         // user1 and user2 can both add/update/delete the comment property
 
@@ -197,15 +225,14 @@ public class ACLProviderTest {
         when(user1CommentProperty.getMetadata()).thenReturn(user1CommentMetadata);
         when(vertex.getProperty(COMMENT_PROP_KEY, COMMENT.getPropertyName())).thenReturn(user1CommentProperty);
 
-        when(aclProvider.canUpdateElement(vertex, user1)).thenReturn(true);
-        when(aclProvider.canUpdateProperty(vertex, COMMENT_PROP_KEY, COMMENT_PROP_NAME, user1)).thenReturn(true);
-        when(aclProvider.canAddProperty(vertex, COMMENT_PROP_KEY, COMMENT_PROP_NAME, user1)).thenReturn(true);
-        when(aclProvider.canDeleteProperty(vertex, COMMENT_PROP_KEY, COMMENT_PROP_NAME, user1)).thenReturn(true);
-
-        when(aclProvider.canUpdateElement(vertex, user2)).thenReturn(true);
-        when(aclProvider.canUpdateProperty(vertex, COMMENT_PROP_KEY, COMMENT_PROP_NAME, user2)).thenReturn(true);
-        when(aclProvider.canAddProperty(vertex, COMMENT_PROP_KEY, COMMENT_PROP_NAME, user2)).thenReturn(true);
-        when(aclProvider.canDeleteProperty(vertex, COMMENT_PROP_KEY, COMMENT_PROP_NAME, user2)).thenReturn(true);
+        when(aclProvider.canUpdateElement(eq(vertex), any(User.class)))
+                .thenReturn(true);
+        when(aclProvider.canUpdateProperty(eq(vertex), eq(COMMENT_PROP_KEY), eq(COMMENT_PROP_NAME), any(User.class)))
+                .thenReturn(true);
+        when(aclProvider.canAddProperty(eq(vertex), eq(COMMENT_PROP_KEY), eq(COMMENT_PROP_NAME), any(User.class)))
+                .thenReturn(true);
+        when(aclProvider.canDeleteProperty(eq(vertex), eq(COMMENT_PROP_KEY), eq(COMMENT_PROP_NAME), any(User.class)))
+                .thenReturn(true);
     }
 
     private void setupForRegularPropertyTests() {

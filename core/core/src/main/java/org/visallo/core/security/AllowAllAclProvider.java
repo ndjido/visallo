@@ -30,29 +30,4 @@ public class AllowAllAclProvider extends ACLProvider {
     public boolean canAddProperty(Element element, String propertyKey, String propertyName, User user) {
         return true;
     }
-
-    @Override
-    public boolean canDeleteElement(ClientApiElement element, User user) {
-        return true;
-    }
-
-    @Override
-    public boolean canDeleteProperty(ClientApiElement element, ClientApiProperty p, User user) {
-        return true;
-    }
-
-    @Override
-    public boolean canUpdateElement(ClientApiElement element, User user) {
-        return true;
-    }
-
-    @Override
-    public boolean canUpdateProperty(ClientApiElement element, ClientApiProperty p, User user) {
-        return true;
-    }
-
-    @Override
-    public boolean canAddProperty(ClientApiElement element, ClientApiProperty p, User user) {
-        return true;
-    }
 }
