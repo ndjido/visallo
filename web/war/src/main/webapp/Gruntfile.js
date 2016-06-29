@@ -65,11 +65,27 @@ module.exports = function(grunt) {
             }
         },
 
+        babel: {
+            'jsx-development': {
+                options: {
+                    sourceMap: 'inline'
+                },
+                files: [{ expand: true, cwd: 'js', src: ['**/*.jsx'], dest: 'jsc', ext: '.js' }]
+            },
+            'jsx-production': {
+                options: {
+                    sourceMap: true
+                },
+                files: [{ expand: true, cwd: 'js', src: ['**/*.jsx'], dest: 'jsc', ext: '.js' }]
+            }
+        },
+
         requirejs: {
             options: {
                 mainConfigFile: 'js/require.config.js',
                 dir: 'jsc',
                 baseUrl: 'js',
+                fileExclusionRegExp: /(^\.|\.jsx$)/,
                 preserveLicenseComments: false,
                 removeCombined: false
             },
@@ -100,10 +116,10 @@ module.exports = function(grunt) {
 
         eslint: {
             development: {
-                src: ['js/**/*.js', 'test/unit/**/*.js']
+                src: ['js/**/*.js', 'test/unit/**/*.js', 'js/**/*.jsx']
             },
             ci: {
-                src: 'js/**/*.js',
+                src: ['js/**/*.js', 'js/**/*.jsx'],
                 options: {
                     format: 'checkstyle',
                     outputFile: 'build/checkstyle.xml'
@@ -159,7 +175,7 @@ module.exports = function(grunt) {
                     'js/**/*.vsh',
                     'js/**/*.fsh'
                 ],
-                tasks: ['requirejs:development', 'notify:js'],
+                tasks: ['babel:jsx-development', 'requirejs:development', 'notify:js'],
                 options: {
                     livereload: {
                         port: 35729,
@@ -169,7 +185,7 @@ module.exports = function(grunt) {
                 }
             },
             lint: {
-                files: ['js/**/*.js', 'test/unit/**/*.js'],
+                files: ['js/**/*.js', 'js/**/*.jsx', 'test/unit/**/*.js'],
                 tasks: ['eslint:development']
             }
         },
@@ -178,7 +194,7 @@ module.exports = function(grunt) {
             js: {
                 options: {
                     title: 'Visallo',
-                    message: 'RequireJS finished'
+                    message: 'Scripts finished'
                 }
             },
             css: {
@@ -220,16 +236,17 @@ module.exports = function(grunt) {
         }
       });
 
-      grunt.loadNpmTasks('grunt-exec');
+      grunt.loadNpmTasks('grunt-amd-wrap');
+      grunt.loadNpmTasks('grunt-babel');
       grunt.loadNpmTasks('grunt-contrib-clean');
       grunt.loadNpmTasks('grunt-contrib-less');
-      grunt.loadNpmTasks('grunt-contrib-watch');
       grunt.loadNpmTasks('grunt-contrib-requirejs');
-      grunt.loadNpmTasks('grunt-amd-wrap');
-      grunt.loadNpmTasks('grunt-notify');
-      grunt.loadNpmTasks('grunt-karma');
-      grunt.loadNpmTasks('grunt-plato');
+      grunt.loadNpmTasks('grunt-contrib-watch');
       grunt.loadNpmTasks('grunt-eslint');
+      grunt.loadNpmTasks('grunt-exec');
+      grunt.loadNpmTasks('grunt-karma');
+      grunt.loadNpmTasks('grunt-notify');
+      grunt.loadNpmTasks('grunt-plato');
       grunt.loadTasks('grunt-tasks');
 
       // Speed up lint by only checking changed files
@@ -252,9 +269,9 @@ module.exports = function(grunt) {
          ['deps', 'test:style', 'karma:ci']);
 
       grunt.registerTask('development', 'Build js/less for development',
-         ['clean:src', 'eslint:development', 'less:development', 'less:developmentContrast', 'requirejs:development']);
+         ['clean:src', 'eslint:development', 'less:development', 'less:developmentContrast', 'babel:jsx-development', 'requirejs:development']);
       grunt.registerTask('production', 'Build js/less for production',
-         ['clean:src', 'eslint:ci', 'less:production', 'less:productionContrast', 'requirejs:production']);
+         ['clean:src', 'eslint:ci', 'less:production', 'less:productionContrast', 'babel:jsx-production', 'requirejs:production']);
 
       grunt.registerTask('default', ['development', 'watch']);
 };
